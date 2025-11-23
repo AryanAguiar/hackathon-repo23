@@ -1,5 +1,9 @@
 from urllib.parse import urlparse
-from extract_text import extract_article_text
+from extract_article import extract_article_text
+from extract_sentence import article_sentence_score
+from config import Config
+
+claim = Config.query
 
 HIGH_TRUST = [
     "nih.gov", "ncbi.nlm.nih.gov", "cdc.gov", "fda.gov", "ema.europa.eu",
@@ -42,13 +46,13 @@ def get_domain(url):
     return urlparse(url).netloc.lower()
 
 def is_high_trust(domain):
-    return any(domain.endswith(t) for t in HIGH_TRUST)
+    return any(t in domain for t in HIGH_TRUST)
 
 def score_source(title, snippet, url):
     text = (title + " " + snippet).lower()
     domain = get_domain(url)
 
-    score = 0.5  # start score
+    score = 0.5
 
     # DOMAIN TRUST
     if any(k in domain for k in HIGH_TRUST):
@@ -67,7 +71,7 @@ def score_source(title, snippet, url):
     return max(0, min(1, score))
 
 
-def full_article_score(url, base_score):
+def full_article_score(url, base_score, claim):
     article_text = extract_article_text(url).lower()
 
     if not article_text:
@@ -82,7 +86,7 @@ def full_article_score(url, base_score):
     return max(0, min(1, base_score))
 
 
-def search_results_score(results):
+def search_results_score(results, claim):
     output = []
 
     for r in results:
@@ -90,16 +94,19 @@ def search_results_score(results):
         domain = get_domain(r["link"])
 
         final_score = base_score
-
         if is_high_trust(domain):
-            final_score = full_article_score(r["link"], base_score)
+            final_score = full_article_score(r["link"], base_score, claim)
+
+        sentence_wise_score = article_sentence_score(r["link"], base_score, claim)
 
         output.append({
             "title": r["title"],
             "link": r["link"],
             "snippet": r["snippet"],
-            "credibility": final_score
+            "credibility": final_score,
+            "article_sentence_score": sentence_wise_score
         })
 
     output.sort(key=lambda x: x["credibility"], reverse=True)
     return output
+

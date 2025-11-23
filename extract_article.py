@@ -13,7 +13,7 @@ def extract_article_text(url: str):
         soup = BeautifulSoup(summary_html, "html.parser")
 
         text = soup.get_text(separator=" ", strip=True)
-        return text[:3000]  # limit size for scoring
+        return text[:10000]  # limit size for scoring
 
     except Exception:
         return ""
