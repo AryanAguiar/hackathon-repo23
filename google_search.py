@@ -7,7 +7,7 @@ def search_text(query: str):
         "key": Config.GOOGLE_API_KEY,
         "cx": Config.GOOGLE_SEARCH_ENGINE_ID,
         "q": query,
-        "num": 5
+        "num": 10
     }
 
     res = requests.get(url, params=params)

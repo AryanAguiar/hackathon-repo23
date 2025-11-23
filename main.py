@@ -18,5 +18,9 @@ if rating:
 
     avg_deep_score = sum([i["article_sentence_score"] for i in rating]) / len(rating)
     print("Average deep credibility score:", round(avg_deep_score * 100, 2), "%")
+
+    combined_score = (avg_sf_score * 0.4) + (avg_deep_score * 0.6)
+    print("Combined average credibility score:", round(combined_score * 100, 2), "%")
+    
 else:
     print("No results found.")

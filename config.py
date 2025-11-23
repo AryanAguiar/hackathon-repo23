@@ -7,5 +7,5 @@ class Config:
     # API Keys
     GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
     GOOGLE_SEARCH_ENGINE_ID = os.getenv('GOOGLE_SEARCH_ENGINE_ID')
-    
-    query = "The Earth revolves around the Sun once every 365.25 days."
+
+    query = "In October, Aishat was found dead in a rented flat in neighbouring Armenia. Police say Aishat was murdered."
